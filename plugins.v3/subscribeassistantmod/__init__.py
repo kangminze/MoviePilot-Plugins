@@ -13,7 +13,7 @@ from apscheduler.triggers.cron import CronTrigger
 from packaging.version import Version
 
 from app import schemas
-from app.application.subscribe import add_subscribe
+from app.application.subscription.write import add_subscribe
 from app.chain.media import MediaChain
 from app.chain.storage import StorageChain
 from app.chain.subscribe import SubscribeChain
@@ -49,7 +49,7 @@ class SubscribeAssistantMod(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/InfinityPacer/MoviePilot-Plugins/main/icons/subscribeassistant.png"
     # 插件版本
-    plugin_version = "3.0.0"
+    plugin_version = "3.0.1"
     # 插件作者
     plugin_author = "InfinityPacer,Seed680"
     # 作者主页
