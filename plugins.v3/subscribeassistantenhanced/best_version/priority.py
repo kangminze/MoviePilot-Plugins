@@ -10,6 +10,7 @@ from ..shared.subscribe import (
     is_full_best_version_subscribe,
     is_tv_episode_best_version_subscribe,
     resolve_subscribe_media_type,
+    to_subscription_snapshot,
 )
 from ..shared.update import update_subscribe
 
@@ -170,7 +171,7 @@ class PriorityManager:
         if not self.can_backfill(subscribe) or not existing_episodes:
             return False
         summary = SubscribeChain().backfill_existing_episodes(
-            subscribe,
+            to_subscription_snapshot(subscribe),
             existing_episodes,
             priority=100,
             scene=self._format_backfill_scene(scene),
@@ -183,7 +184,8 @@ class PriorityManager:
             target = self._episode_target_episodes(subscribe)
             if target:
                 SubscribeChain().backfill_existing_episodes(
-                    subscribe, target, priority=100, scene=self._format_backfill_scene("plugin_complete")
+                    to_subscription_snapshot(subscribe), target, priority=100,
+                    scene=self._format_backfill_scene("plugin_complete")
                 )
             return
         payload = {"current_priority": 100}
@@ -234,4 +236,4 @@ class PriorityManager:
             subscribe.current_priority = current_priority
         update_subscribe(self._subscribe_oper, subscribe.id, payload)
         subscribe.episode_priority = episode_priority
-        SubscribeChain().refresh_subscribe_progress(subscribe, scene=scene)
+        SubscribeChain().refresh_subscribe_progress(to_subscription_snapshot(subscribe), scene=scene)

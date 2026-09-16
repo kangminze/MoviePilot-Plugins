@@ -1,10 +1,25 @@
 """订阅匹配/格式化工具函数。"""
 import json
+from dataclasses import fields as dataclass_fields
 from typing import List, Optional, Tuple
 
+from app.application.subscription.contract import SubscriptionSnapshot
 from app.sdk.logging import logger
 from app.sdk.media import MetaInfo
 from app.schemas.types import MediaSource, MediaType
+
+
+def to_subscription_snapshot(subscribe) -> SubscriptionSnapshot:
+    """把 ORM/Schema 订阅对象投影为主程序 Chain 合同要求的订阅快照；已是快照或空值时原样返回。"""
+    if subscribe is None or isinstance(subscribe, SubscriptionSnapshot):
+        return subscribe
+    payload = {}
+    for field in dataclass_fields(SubscriptionSnapshot):
+        value = getattr(subscribe, field.name, None)
+        if field.name == "media_source" and isinstance(value, str) and value:
+            value = MediaSource(value)
+        payload[field.name] = value
+    return SubscriptionSnapshot(**payload)
 
 
 def resolve_subscribe_media_type(subscribe) -> MediaType:
